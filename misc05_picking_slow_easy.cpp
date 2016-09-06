@@ -80,7 +80,7 @@ int main( void )
     TwSetParam(InfoUI, NULL, "refresh", TW_PARAM_CSTRING, 1, "0.1");
     std::string instructions = "";
     TwAddVarRW(InfoUI, "Left Click to Pick and Hold to Drag", TW_TYPE_STDSTRING, &instructions, NULL);
-    TwAddVarRW(InfoUI, "Hold right click to make points bigger", TW_TYPE_STDSTRING, &instructions, NULL);
+    TwAddVarRW(InfoUI, "Hold right mouse button to make points bigger", TW_TYPE_STDSTRING, &instructions, NULL);
 
 	// Ensure we can capture the escape key being pressed below
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
@@ -133,7 +133,12 @@ int main( void )
 	const size_t RgbOffset = sizeof(Vertices[0].XYZW);
 	const size_t IndexCount = sizeof(Indices) / sizeof(unsigned short);
 
-	float pickingColor[IndexCount] = { 0 / 255.0f, 1 / 255.0f, 2 / 255.0f, 3 / 255.0f,  4 / 255.0f, 5 / 255.0f, 6 / 255.0f, 7 / 255.0f };		// set this procedurally for greater number of points
+    //float pickingColor[IndexCount] = { 0 / 255.0f, 1 / 255.0f, 2 / 255.0f, 3 / 255.0f,  4 / 255.0f, 5 / 255.0f, 6 / 255.0f, 7 / 255.0f };
+    float pickingColor[IndexCount];
+    for(int i = 0; i < IndexCount; i++) {
+        pickingColor[i] = i / 255.0f;
+    }
+    // set this procedurally for greater number of points
 
 	// Create Vertex Array Object
 	GLuint VertexArrayId;
@@ -191,7 +196,7 @@ int main( void )
 		nbFrames++;
 		if ( currentTime - lastTime >= 1.0 ){ // If last prinf() was more than 1sec ago
 			// printf and reset
-			//printf("%f ms/frame\n", 1000.0/double(nbFrames));
+            printf("%f ms/frame\n", 1000.0/double(nbFrames));
 			nbFrames = 0;
 			lastTime += 1.0;
 		}
@@ -277,14 +282,14 @@ int main( void )
 
                 if (isColorChanged) {
                     float zpos;
-                    cout << viewport[2] << " " << viewport[3] << endl;
-                    cout << "original mousepos " << xpos << " " << ypos << " " << zpos;
+                    //cout << viewport[2] << " " << viewport[3] << endl;
+                    //cout << "original mousepos " << xpos << " " << ypos << " " << zpos;
                     glReadPixels(xpos, 600 - ypos, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &zpos);
                     mousePos = glm::unProject(glm::vec3(xpos, ypos, zpos), ModelMatrix, ProjectionMatrix, vec4(viewport[0], viewport[1], viewport[2], viewport[3]));
-                    cout << endl;
-                    cout << "Mousepos " << -mousePos.x << " " << -mousePos.y << " " << mousePos.z << endl;
-					cout << "Vertices " << Vertices[pickedID].XYZW[0] << " " << Vertices[pickedID].XYZW[1] << endl;
-                    cout << "pickedID" << pickedID << endl;
+                    //cout << endl;
+                    //cout << "Mousepos " << -mousePos.x << " " << -mousePos.y << " " << mousePos.z << endl;
+                    //cout << "Vertices " << Vertices[pickedID].XYZW[0] << " " << Vertices[pickedID].XYZW[1] << endl;
+                    //cout << "pickedID" << pickedID << endl;
                     Vertices[pickedID].XYZW[0] = -mousePos.x;
                     Vertices[pickedID].XYZW[1] = -mousePos.y;
                 }
@@ -316,7 +321,7 @@ int main( void )
 		if (state == GLFW_RELEASE) {
             //cout << "in release" << endl;
 			if (isColorChanged && pickedID < IndexCount) {
-                cout << "in release still " << Vertices[pickedID].XYZW[0] << " " << Vertices[pickedID].XYZW[1] << " " << Vertices[pickedID].XYZW[2] << endl;
+                //cout << "in release still " << Vertices[pickedID].XYZW[0] << " " << Vertices[pickedID].XYZW[1] << " " << Vertices[pickedID].XYZW[2] << endl;
 				Vertices[pickedID].RGBA[0] = pickedOriginalColorR;
 				Vertices[pickedID].RGBA[1] = pickedOriginalColorG;
 				Vertices[pickedID].RGBA[2] = pickedOriginalColorB;
